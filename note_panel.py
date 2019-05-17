@@ -38,7 +38,8 @@ class NotePanel(wx.Panel):
         self.button.Bind(wx.EVT_BUTTON, self.cb_save)
         self.text.Bind(wx.EVT_TEXT, self.cb_text)
         self.text.Bind(wx.EVT_TEXT_ENTER, self.cb_text_enter)
-        #
+        self.text.Bind(wx.EVT_KILL_FOCUS, self.cb_loose_focus)
+        #EVT_KILL_FOCUS
 
         self.SetSizer(sizer)
         self.Layout()
@@ -62,6 +63,12 @@ class NotePanel(wx.Panel):
         """ on enter textarea """
         print("enter...")
         #self.note.content = self.text.GetValue()
+        self.note.save_to_file()
+        event.Skip(True)
+
+    def cb_loose_focus(self, event):
+        """ on loose focus """
+        print("loosing focus now...")
         self.note.save_to_file()
         event.Skip(True)
 

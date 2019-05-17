@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 """
 main app
 """
@@ -9,6 +9,7 @@ import wx.adv
 
 from notes_frame_wraper import NotesFrameWrapper
 from notes_data import Category
+from my_frame import MyFrame
 
 
 class App(wx.App):
@@ -16,9 +17,13 @@ class App(wx.App):
 
     def __init__(self):
         wx.App.__init__(self)
+
+        with open('config.json') as json_cfg_file:
+            cfg = json.load(json_cfg_file)
+
         self.icon = wx.Icon('card.ico')
         self.tbicon = wx.adv.TaskBarIcon()
-        self.tbicon.SetIcon(self.icon, 'wx 01 test')
+        self.tbicon.SetIcon(self.icon, cfg['title'])
 
         def cb_taskbar_click(event):
             """ left click on tray icon"""
@@ -29,19 +34,19 @@ class App(wx.App):
         self.tbicon.Bind(wx.adv.EVT_TASKBAR_LEFT_DOWN, cb_taskbar_click)
 
         #frame = NoteWindow(None, self.icon)
-        self.frame = MainWindow(None, self.icon)
+        self.frame = MainWindow(None, self.icon, cfg)
         self.frame.Show()
 
-class MainWindow(wx.Frame):
+class MainWindow(MyFrame):
     """
     main frame
     """
 
-    def __init__(self, parent, icon):
-        wx.Frame.__init__(
+    def __init__(self, parent, icon, cfg):
+        MyFrame.__init__(
             self, parent,
             id=wx.ID_ANY,
-            title="Sticky notes",
+            title=cfg["title"],
             pos=self.load_window_position(), #wx.Point(100, 100),
             size=wx.Size(500, 300),
             style=0|wx.TAB_TRAVERSAL,
@@ -56,7 +61,7 @@ class MainWindow(wx.Frame):
         self.icon = icon
 
         self.category = Category()
-        self.category.test()
+        self.category.load_files()
 
         self.wrapper = NotesFrameWrapper(icon, self.category)
 
@@ -142,25 +147,20 @@ class MainWindow(wx.Frame):
 
     def cb_exit(self, event):
         """Close the frame, terminating the application."""
-        print(event)
-
         self.wrapper.frame.Destroy()
         self.Close(True)
 
     def cb_note(self, event):
         """Show note"""
-        print(event)
-
-        #self.note.Show()
-        #self.build_notes_frame()
         self.wrapper.frame.Show()
+        self.wrapper.frame.Raise()
 
-    def toggle(self):
-        """Toggle frame"""
-        if self.IsShown():
-            self.Show(False)
-        else:
-            self.Show(True)
+    # def toggle(self):
+    #     """Toggle frame"""
+    #     if self.IsShown():
+    #         self.Show(False)
+    #     else:
+    #         self.Show(True)
 
     def __del__(self):
         pass

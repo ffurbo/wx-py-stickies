@@ -21,12 +21,12 @@ class Category():
         """ add new note """
         self.notes.append(note)
 
-    def test(self):
+    def load_files(self):
         """ generate some test data """
         self.name = "Test category"
         for i in range(5):
             note = Note()
-            note.set_data(i, "title %d" % (i), "content %d" % (i))
+            note.load_from_file('data/note_%d.json'%(i))
             self.add_note(note)
 
 
@@ -72,3 +72,21 @@ class Note():
             print("data saved")
         finally:
             print("Function execution completed")
+
+    def load_from_file(self, file_name):
+        """ load note from file """
+
+        try:
+            file = open(file_name, 'r')
+            datastr = file.read()
+        except OSError as err:
+            print("can't read data: {0}".format(err))
+        else:
+            file.close()
+            data = json.loads(datastr)
+
+            self.note_id = data['note_id']
+            self.title = data['title']
+            self.content = data['content']
+
+            print("data read")
