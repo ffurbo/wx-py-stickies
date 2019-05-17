@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<resource xmlns="http://www.wxwindows.org/wxxrc" version="2.3.0.1">
+	<object class="wxFrame" name="NotesFrame">
+		<style>wxDEFAULT_FRAME_STYLE|wxTAB_TRAVERSAL</style>
+		<size>435,300</size>
+		<bg>#ffffd9</bg>
+		<title></title>
+		<centered>1</centered>
+		<aui_managed>0</aui_managed>
+		<object class="wxNotebook" name="m_notebook1">
+			<bg>#fff8b9</bg>
+		</object>
+	</object>
+
+	<object class="wxPanel" name="NotePanel">
+		<style>wxTAB_TRAVERSAL</style>
+		<object class="wxBoxSizer">
+			<orient>wxVERTICAL</orient>
+			<object class="sizeritem">
+				<option>1</option>
+				<flag>wxALL|wxEXPAND</flag>
+				<border>5</border>
+				<object class="wxTextCtrl" name="m_textCtrl">
+					<style>wxTE_MULTILINE</style>
+					<value></value>
+				</object>
+			</object>
+			<object class="sizeritem">
+				<option>0</option>
+				<flag>wxALL|wxALIGN_RIGHT</flag>
+				<border>5</border>
+				<object class="wxButton" name="m_button">
+					<label>MyButton</label>
+					<default>0</default>
+					<markup>0</markup>
+					<bitmap />
+				</object>
+			</object>
+		</object>
+	</object>
+
+	<object class="wxBoxSizer" name="NotePanelSizer">
+		<orient>wxVERTICAL</orient>
+		<object class="sizeritem">
+			<option>1</option>
+			<flag>wxALL|wxEXPAND</flag>
+			<border>5</border>
+			<object class="wxTextCtrl" name="textCtrl">
+				<style>wxTE_MULTILINE</style>
+				<value></value>
+			</object>
+		</object>
+		<object class="sizeritem">
+			<option>0</option>
+			<flag>wxALL|wxALIGN_RIGHT</flag>
+			<border>5</border>
+			<object class="wxButton" name="button">
+				<label>MyButton</label>
+				<default>0</default>
+				<markup>0</markup>
+				<bitmap />
+			</object>
+		</object>
+	</object>
+		
+</resource>
