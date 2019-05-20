@@ -105,9 +105,21 @@ class MainWindow(MyFrame):
         print(position)
 
     def cb_test(self, event):
-        """Close the frame, terminating the application."""
-        #print(self.GetScreenPosition().Get())
-        self.save_window_position(self.GetPosition().Get())
+        """test event"""
+
+        # try:
+        #     dialog = wx.TextEntryDialog(self, "Enter title of new note", caption="New note")
+        #     if dialog.ShowModal() == wx.ID_OK:
+        #         title = dialog.GetValue()
+        #         print('You entered: %s'%title)
+        #         note = new_note(title)
+        #         if note is not None:
+        #             self.category.add_note(note)
+        #             self.wrapper.add_note_page(note)
+        #     else:
+        #         print('You entered nothing')
+        # finally:
+        #     dialog.Destroy()
 
 
     def save_window_position(self, position):

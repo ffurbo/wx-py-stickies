@@ -1,6 +1,7 @@
 """ data module """
 
 import json
+from pathlib import Path
 
 class Category():
     """ category notes """
@@ -24,17 +25,25 @@ class Category():
     def load_files(self):
         """ generate some test data """
         self.name = "Test category"
-        for i in range(5):
+
+        data_path = Path('data/')
+
+        for path in data_path.glob('note_*.json'):
             note = Note()
-            note.load_from_file('data/note_%d.json'%(i))
+            note.load_from_file(str(path))
             self.add_note(note)
+
+        # for i in range(5):
+        #     note = Note()
+        #     note.load_from_file('data/note_%d.json'%(i))
+        #     self.add_note(note)
 
 
 class Note():
     """ single note """
 
     def __init__(self):
-        self.note_id = 0
+        self.note_id = ""
         self.title = ""
         self.content = ""
 
@@ -54,7 +63,7 @@ class Note():
     def save_to_file(self):
         """ save data to file """
 
-        file_name = 'data/note_%d.json'%(self.note_id)
+        file_name = 'data/note_%s.json'%(self.note_id)
 
         data = {
             'note_id': self.note_id,
@@ -90,3 +99,35 @@ class Note():
             self.content = data['content']
 
             print("data read")
+
+def new_note(title):
+    """ create new note locally """
+
+    note_path = Path('data/note_%s.json'%title)
+    if note_path.is_file():
+        print("path exist")
+        # Store configuration file values
+    else:
+        file_name = 'data/note_%s.json'%title
+
+        data = {
+            'note_id': title,
+            'title': title,
+            'content': ""
+        }
+
+        try:
+            file = open(file_name, 'w')
+            file.write(json.dumps(data))
+        except OSError as err:
+            print("can't save data: {0}".format(err))
+            return None
+        else:
+            file.close()
+
+            note = Note()
+            note.note_id = data['note_id']
+            note.title = data['title']
+            note.content = data['content']
+            print("data saved")
+            return note

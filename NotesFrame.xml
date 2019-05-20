@@ -62,5 +62,19 @@
 			</object>
 		</object>
 	</object>
+
+	<object class="wxFrame" name="frame0">
+		<style>wxDEFAULT_FRAME_STYLE|wxTAB_TRAVERSAL</style>
+		<size>500,300</size>
+		<title></title>
+		<centered>1</centered>
+		<aui_managed>0</aui_managed>
+		<object class="wxPanel" name="panel0">
+			<style>wxTAB_TRAVERSAL</style>
+			<object class="wxBoxSizer">
+				<orient>wxVERTICAL</orient>
+			</object>
+		</object>
+	</object>
 		
 </resource>

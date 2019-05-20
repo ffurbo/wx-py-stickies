@@ -14,12 +14,13 @@ class NotePanel(wx.Panel):
     Panel for single note
     """
 
-    def __init__(self, parent, note_id=0):
+    def __init__(self, notes_wraper):
         wx.Panel.__init__(
-            self, parent, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL
+            self, notes_wraper.tabs, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL
         )
 
-        self.note_id = note_id
+        self.notes_wraper = notes_wraper
+        self.note_id = ""
         self.note = None
 
         sizer = wx.BoxSizer(wx.VERTICAL)
@@ -30,12 +31,19 @@ class NotePanel(wx.Panel):
         )
         sizer.Add(self.text, 1, wx.ALL|wx.EXPAND, 5)
 
-        self.button = wx.Button(
-            self, wx.ID_ANY, "Save %d" % (note_id+1), wx.DefaultPosition, wx.DefaultSize, 0
-        )
-        sizer.Add(self.button, 0, wx.ALL|wx.ALIGN_RIGHT, 5)
+        sizer_btns = wx.BoxSizer(wx.HORIZONTAL)
 
-        self.button.Bind(wx.EVT_BUTTON, self.cb_save)
+        self.button_save = wx.Button(self, wx.ID_ANY, "Save", wx.DefaultPosition, wx.DefaultSize, 0)
+        sizer_btns.Add(self.button_save, 0, wx.ALL|wx.ALIGN_RIGHT, 5)
+
+        self.button_new = wx.Button(self, wx.ID_ANY, "New", wx.DefaultPosition, wx.DefaultSize, 0)
+        sizer_btns.Add(self.button_new, 0, wx.ALL|wx.ALIGN_RIGHT, 5)
+
+        sizer.Add(sizer_btns, 0, wx.ALIGN_RIGHT, 5)
+
+        self.button_save.Bind(wx.EVT_BUTTON, self.cb_save)
+        self.button_new.Bind(wx.EVT_BUTTON, self.cb_new)
+
         self.text.Bind(wx.EVT_TEXT, self.cb_text)
         self.text.Bind(wx.EVT_TEXT_ENTER, self.cb_text_enter)
         self.text.Bind(wx.EVT_KILL_FOCUS, self.cb_loose_focus)
@@ -47,7 +55,8 @@ class NotePanel(wx.Panel):
 
     def load_note(self, note):
         """ load data from Note object """
-        self.text.SetValue(note.content)
+        #self.text.SetValue(note.content)
+        self.text.ChangeValue(note.content) # does not generate EVT_TEXT event
         self.note_id = note.note_id
         self.note = note
 
@@ -57,7 +66,6 @@ class NotePanel(wx.Panel):
         print("typing...")
         self.note.content = self.text.GetValue()
 
-        #self.note.save_to_file()
 
     def cb_text_enter(self, event):
         """ on enter textarea """
@@ -74,8 +82,11 @@ class NotePanel(wx.Panel):
 
     def cb_save(self, event):
         """ save data """
-
         self.note.save_to_file()
+
+    def cb_new(self, event):
+        """ new note """
+        self.notes_wraper.new_note_dialog()
 
         # buffer = BytesIO()
         # curl = pycurl.Curl()

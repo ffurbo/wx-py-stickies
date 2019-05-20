@@ -7,6 +7,7 @@ import wx.adv
 import wx.xrc
 
 from note_panel import NotePanel
+from notes_data import new_note
 
 class NotesFrameWrapper():
     """ wrapper """
@@ -44,9 +45,27 @@ class NotesFrameWrapper():
         """ on close """
         self.frame.Show(False)
 
+
     def add_note_page(self, note):
         """ add new tab """
-        panel = NotePanel(self.tabs)
+        panel = NotePanel(self)
         panel.load_note(note)
         self.note_panels.append(panel)
-        self.tabs.AddPage(panel, "%d. %s" % (note.note_id, note.title), True)
+        self.tabs.AddPage(panel, "%s" % (note.title), True)
+
+
+    def new_note_dialog(self):
+        """ new note """
+        try:
+            dialog = wx.TextEntryDialog(self.frame, "Enter title of new note", caption="New note")
+            if dialog.ShowModal() == wx.ID_OK:
+                title = dialog.GetValue()
+                print('You entered: %s'%title)
+                note = new_note(title)
+                if note is not None:
+                    self.category.add_note(note)
+                    self.add_note_page(note)
+            else:
+                print('You entered nothing')
+        finally:
+            dialog.Destroy()
