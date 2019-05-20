@@ -33,7 +33,7 @@ class NotesFrameWrapper():
         self.frame = self.res.LoadFrame(None, 'NotesFrame')
         self.frame.SetIcon(self.icon)
         self.frame.SetTitle(self.category.name)
-        self.frame.Bind(wx.EVT_CLOSE, self.cb_close)
+        self.frame.Bind(wx.EVT_CLOSE, self.cb_close_event)
 
         self.tabs = wx.xrc.XRCCTRL(self.frame, 'm_notebook1')
 
@@ -41,9 +41,10 @@ class NotesFrameWrapper():
             self.add_note_page(note)
 
 
-    def cb_close(self, event):
+    def cb_close_event(self, event):
         """ on close """
         self.frame.Show(False)
+        #event.Skip(True)
 
 
     def add_note_page(self, note):
