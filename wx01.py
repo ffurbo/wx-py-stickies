@@ -51,9 +51,6 @@ class MainWindow(MyFrame):
 
         self.wrapper = NotesFrameWrapper(self.icon, self.category)
 
-        self.timer = wx.Timer(self)
-
-
 
     def init_ui(self):
         """Initialize user interface"""
@@ -73,86 +70,32 @@ class MainWindow(MyFrame):
         self.m_button1.Bind(wx.EVT_BUTTON, self.cb_test)
         self.m_button2.Bind(wx.EVT_BUTTON, self.cb_note)
         self.m_button3.Bind(wx.EVT_BUTTON, self.cb_exit_btn)
-        self.Bind(wx.EVT_MOVE, self.cb_move)
         self.Bind(wx.EVT_CLOSE, self.cb_close_event)
-
-        self.Bind(wx.EVT_TIMER, self.cb_timer_event)
 
         self.SetSizer(b_sizer2)
         self.Layout()
 
-        #self.Iconize(True)
-
-    def cb_timer_event(self, event):
-        """ timer test """
-        print("timer...")
-        position = self.GetPosition().Get()
-        self.save_window_position(position)
 
 
-    def cb_move(self, event):
-        """Close the frame, terminating the application."""
-        #print("move...")
-
-        timer_running = self.timer.IsRunning
-        print(timer_running)
-
-        if not timer_running:
-            self.timer.StartOnce(1000)
-            print("Staring timer")
-
-        #position = self.GetPosition().Get()
-        #self.save_window_position(position)
-        #print(position)
 
     def cb_test(self, event):
         """test event"""
-
-    def save_window_position(self, position):
-        """ save position tuple to file """
-        str_position = json.dumps(position)
-        file_name = 'data/main_window_position.json'
-
-        try:
-            file = open(file_name, 'w')
-            file.write(str_position)
-        except OSError as err:
-            print("can't save window position: {0}".format(err))
-        else:
-            file.close()
-            print("position saved")
-        # finally:
-        #     print("Function execution completed")
-
-
-    def load_window_position(self):
-        """ load window position from file """
-        file_name = 'data/main_window_position.json'
-
-        try:
-            file = open(file_name, 'r')
-            str_position = file.read()
-        except OSError as err:
-            print("can't load window position: {0}".format(err))
-            return wx.DefaultPosition
-        else:
-            file.close()
-            print("position loaded")
-            position = tuple(json.loads(str_position))
-            return wx.Point(*position)
 
     def cb_close_event(self, event):
         """ callback for EVT_CLOSE """
         self.kill_me()
 
+
     def cb_exit_btn(self, event):
         """Close the frame, terminating the application."""
         self.kill_me()
+
 
     def cb_note(self, event):
         """Show note"""
         self.wrapper.frame.Show()
         self.wrapper.frame.Raise()
+
 
     def kill_me(self):
         """ close an app """
