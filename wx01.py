@@ -36,10 +36,12 @@ class MainWindow(MyFrame):
             self, parent,
             id=wx.ID_ANY,
             title=cfg["title"],
-            pos=self.load_window_position(), #wx.Point(100, 100),
+            #pos=self.load_window_position(), #wx.Point(100, 100),
             size=wx.Size(500, 300),
             style=0|wx.TAB_TRAVERSAL,
         )
+
+        self.SetPosition(self.load_window_position())
 
         self.icon = wx.Icon('card.ico')
 

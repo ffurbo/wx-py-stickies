@@ -11,9 +11,15 @@ class MyFrame(wx.Frame):
     def __init__(self, *args, **kw):
         wx.Frame.__init__(self, *args, **kw)
 
-        self.move_timer = wx.Timer(self)
+        self.timer_handler = wx.EvtHandler()
+        #self.move_timer = wx.Timer(self)
+        self.move_timer = wx.Timer(self.timer_handler)
+
         self.Bind(wx.EVT_MOVE, self.cb_move)
-        self.Bind(wx.EVT_TIMER, self.cb_move_timer_event)
+
+        #self.Bind(wx.EVT_TIMER, self.cb_move_timer_event)
+        self.timer_handler.Bind(wx.EVT_TIMER, self.cb_move_timer_event)
+
         # self.panel0 = None
         # self.sizer1 = None
 
