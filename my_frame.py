@@ -1,6 +1,7 @@
 """ extended frame """
 
 import json
+import time
 import wx
 
 class MyFrame(wx.Frame):
@@ -28,6 +29,9 @@ class MyFrame(wx.Frame):
 
         if not self.move_timer.IsRunning():
             self.move_timer.StartOnce(2000)
+
+        #print(time.time_ns())
+        print(int(time.time()))
 
 
     def cb_move_timer_event(self, event):

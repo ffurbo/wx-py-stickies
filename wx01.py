@@ -46,13 +46,13 @@ class MainWindow(MyFrame):
         self.icon = wx.Icon('card.ico')
 
         self.SetIcon(self.icon)
-        self.init_ui()
 
         self.category = Category()
         self.category.load_files()
 
         self.wrapper = NotesFrameWrapper(self.icon, self.category)
 
+        self.init_ui()
 
     def init_ui(self):
         """Initialize user interface"""
@@ -64,13 +64,18 @@ class MainWindow(MyFrame):
 
         self.m_button1 = wx.Button(self, wx.ID_ANY, "Test", wx.DefaultPosition, wx.DefaultSize, 0)
         b_sizer2.Add(self.m_button1, 0, wx.ALL, 5)
-        self.m_button2 = wx.Button(self, wx.ID_ANY, "Note", wx.DefaultPosition, wx.DefaultSize, 0)
+        self.m_button2 = wx.Button(self, wx.ID_ANY, "Notes", wx.DefaultPosition, wx.DefaultSize, 0)
         b_sizer2.Add(self.m_button2, 0, wx.ALL, 5)
+
+        self.m_button4 = wx.Button(self, wx.ID_ANY, "New note", wx.DefaultPosition, wx.DefaultSize, 0)
+        b_sizer2.Add(self.m_button4, 0, wx.ALL, 5)
+
         self.m_button3 = wx.Button(self, wx.ID_ANY, "Exit", wx.DefaultPosition, wx.DefaultSize, 0)
         b_sizer2.Add(self.m_button3, 0, wx.ALL, 5)
 
         self.m_button1.Bind(wx.EVT_BUTTON, self.cb_test)
         self.m_button2.Bind(wx.EVT_BUTTON, self.cb_note)
+        self.m_button4.Bind(wx.EVT_BUTTON, self.wrapper.new_note_dialog) 
         self.m_button3.Bind(wx.EVT_BUTTON, self.cb_exit_btn)
         self.Bind(wx.EVT_CLOSE, self.cb_close_event)
 

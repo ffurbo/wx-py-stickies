@@ -55,7 +55,7 @@ class NotesFrameWrapper():
         self.tabs.AddPage(panel, "%s" % (note.title), True)
 
 
-    def new_note_dialog(self):
+    def new_note_dialog(self, event=None):
         """ new note """
         try:
             dialog = wx.TextEntryDialog(self.frame, "Enter title of new note", caption="New note")

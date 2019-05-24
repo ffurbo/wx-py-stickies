@@ -1,6 +1,7 @@
 """ data module """
 
 import json
+import time
 from pathlib import Path
 
 class Category():
@@ -63,7 +64,7 @@ class Note():
     def save_to_file(self):
         """ save data to file """
 
-        file_name = 'data/note_%s.json'%(self.note_id)
+        file_name = 'data/note_%d.json'%(self.note_id)
 
         data = {
             'note_id': self.note_id,
@@ -103,15 +104,15 @@ class Note():
 def new_note(title):
     """ create new note locally """
 
-    note_path = Path('data/note_%s.json'%title)
+    note_id = int(time.time())
+    file_name = 'data/note_%d.json'%note_id
+
+    note_path = Path(file_name)
     if note_path.is_file():
         print("path exist")
-        # Store configuration file values
     else:
-        file_name = 'data/note_%s.json'%title
-
         data = {
-            'note_id': title,
+            'note_id': note_id,
             'title': title,
             'content': ""
         }
