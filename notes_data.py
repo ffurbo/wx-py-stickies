@@ -7,9 +7,9 @@ from pathlib import Path
 class Category():
     """ category notes """
 
-    def __init__(self):
+    def __init__(self, category_name):
         self.category_id = 0
-        self.name = ""
+        self.name = category_name
         self.notes = []
 
     def load_data(self):
@@ -27,10 +27,10 @@ class Category():
         """ generate some test data """
         self.name = "Test category"
 
-        data_path = Path('data/')
+        data_path = Path('data/categories/%s'%self.name)
 
         for path in data_path.glob('note_*.json'):
-            note = Note()
+            note = Note(self)
             note.load_from_file(str(path))
             self.add_note(note)
 
@@ -43,10 +43,11 @@ class Category():
 class Note():
     """ single note """
 
-    def __init__(self):
+    def __init__(self, category):
         self.note_id = ""
         self.title = ""
         self.content = ""
+        self.category = category
 
     def set_data(self, note_id, title, content):
         """ set fields """
@@ -101,7 +102,7 @@ class Note():
 
             print("data read")
 
-def new_note(title):
+def new_note(title, category):
     """ create new note locally """
 
     note_id = int(time.time())
@@ -126,7 +127,7 @@ def new_note(title):
         else:
             file.close()
 
-            note = Note()
+            note = Note(category)
             note.note_id = data['note_id']
             note.title = data['title']
             note.content = data['content']

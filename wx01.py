@@ -46,9 +46,23 @@ class MainWindow(MyFrame):
         self.icon = wx.Icon('card.ico')
 
         self.SetIcon(self.icon)
+        self.categories = []
 
-        self.category = Category()
-        self.category.load_files()
+
+        with open('data/categories.json') as json_category_file:
+            categories_list = json.load(json_category_file)
+
+        print(categories_list)
+
+        for category_name in categories_list:
+            category = Category(category_name)
+            category.load_files()
+            self.categories.append(category)
+
+        self.category = self.categories[0]
+        #self.category.load_files()
+
+        print(self.category.notes)
 
         self.wrapper = NotesFrameWrapper(self.icon, self.category)
 
@@ -75,7 +89,7 @@ class MainWindow(MyFrame):
 
         self.m_button1.Bind(wx.EVT_BUTTON, self.cb_test)
         self.m_button2.Bind(wx.EVT_BUTTON, self.cb_note)
-        self.m_button4.Bind(wx.EVT_BUTTON, self.wrapper.new_note_dialog) 
+        self.m_button4.Bind(wx.EVT_BUTTON, self.wrapper.new_note_dialog)
         self.m_button3.Bind(wx.EVT_BUTTON, self.cb_exit_btn)
         self.Bind(wx.EVT_CLOSE, self.cb_close_event)
 
