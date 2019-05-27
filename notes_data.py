@@ -25,7 +25,7 @@ class Category():
 
     def load_files(self):
         """ generate some test data """
-        self.name = "Test category"
+        # self.name = "Test category"
 
         data_path = Path('data/categories/%s'%self.name)
 
@@ -65,7 +65,7 @@ class Note():
     def save_to_file(self):
         """ save data to file """
 
-        file_name = 'data/note_%d.json'%(self.note_id)
+        file_name = 'data/categories/%s/note_%d.json'%(self.category.name, self.note_id)
 
         data = {
             'note_id': self.note_id,
@@ -106,7 +106,7 @@ def new_note(title, category):
     """ create new note locally """
 
     note_id = int(time.time())
-    file_name = 'data/note_%d.json'%note_id
+    file_name = 'data/categories/%s/note_%d.json'%(category.name, note_id)
 
     note_path = Path(file_name)
     if note_path.is_file():

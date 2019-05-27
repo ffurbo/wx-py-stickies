@@ -19,18 +19,24 @@ class NoteTaskBarIcon(wx.adv.TaskBarIcon):
 
         self.main_frame = main_frame
 
-        menu = wx.Menu()
-        create_menu_item(menu, 'Say Hello', self.cb_on_hello)
-        menu.AppendSeparator()
-        create_menu_item(menu, 'Exit', self.cb_on_exit)
-        self.menu = menu
+        # menu = wx.Menu()
+        # create_menu_item(menu, 'Say Hello', self.cb_on_hello)
+        # menu.AppendSeparator()
+        # create_menu_item(menu, 'Exit', self.cb_on_exit)
+        # self.menu = menu
 
         self.Bind(wx.adv.EVT_TASKBAR_LEFT_DOWN, self.cb_taskbar_click)
 
     def CreatePopupMenu(self):
         """ create popup menu """
 
-        return self.menu
+        menu = wx.Menu()
+        create_menu_item(menu, 'Say Hello', self.cb_on_hello)
+        menu.AppendSeparator()
+        create_menu_item(menu, 'Exit', self.cb_on_exit)
+        #self.menu = menu
+
+        return menu
 
     def cb_taskbar_click(self, event):
         """ left click on tray icon"""

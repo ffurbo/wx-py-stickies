@@ -62,7 +62,7 @@ class NotesFrameWrapper():
             if dialog.ShowModal() == wx.ID_OK:
                 title = dialog.GetValue()
                 print('You entered: %s'%title)
-                note = new_note(title)
+                note = new_note(title, self.category)
                 if note is not None:
                     self.category.add_note(note)
                     self.add_note_page(note)
