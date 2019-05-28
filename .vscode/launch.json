@@ -10,6 +10,13 @@
             "request": "launch",
             "program": "${file}",
             "console": "integratedTerminal"
+        },
+        {
+            "name": "Wx-PyStickies",
+            "type": "python",
+            "request": "launch",
+            "program": "wx01.py",
+            "console": "integratedTerminal"
         }
     ]
 }
