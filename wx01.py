@@ -52,7 +52,6 @@ class MainWindow(MyFrame):
         with open('data/categories.json') as json_category_file:
             categories_list = json.load(json_category_file)
 
-        print(categories_list)
 
         for category_name in categories_list:
             category = Category(category_name)
@@ -61,8 +60,7 @@ class MainWindow(MyFrame):
 
         self.category = self.categories[0]
         #self.category.load_files()
-
-        print(self.category.notes)
+        #print(self.category.notes)
 
         self.wrapper = NotesFrameWrapper(self.icon, self.category)
 
@@ -120,7 +118,7 @@ class MainWindow(MyFrame):
 
     def kill_me(self):
         """ close an app """
-        print("Bye bye...")
+        #print("Bye bye...")
         self.wrapper.frame.Destroy()
         self.Destroy()
 

@@ -31,7 +31,7 @@ class MyFrame(wx.Frame):
             self.move_timer.StartOnce(2000)
 
         #print(time.time_ns())
-        print(int(time.time()))
+        #print(int(time.time()))
 
 
     def cb_move_timer_event(self, event):
@@ -51,7 +51,7 @@ class MyFrame(wx.Frame):
             print("can't save window position: {0}".format(err))
         else:
             file.close()
-            print("position saved")
+            #print("position saved")
 
 
     def load_window_position(self):
@@ -66,7 +66,7 @@ class MyFrame(wx.Frame):
             return wx.DefaultPosition
         else:
             file.close()
-            print("position loaded")
+            #print("position loaded")
             position = tuple(json.loads(str_position))
             return wx.Point(*position)
 

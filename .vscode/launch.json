@@ -5,17 +5,10 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Python: Current File",
-            "type": "python",
-            "request": "launch",
-            "program": "${file}",
-            "console": "integratedTerminal"
-        },
-        {
             "name": "Wx-PyStickies",
             "type": "python",
             "request": "launch",
-            "program": "wx01.py",
+            "program": "${workspaceFolder}/wx01.py",
             "console": "integratedTerminal"
         }
     ]
