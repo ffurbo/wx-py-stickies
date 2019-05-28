@@ -6,10 +6,10 @@
     "configurations": [
         
         {
-            "name": "Python: Current File",
+            "name": "Wx-PyStickies",
             "type": "python",
             "request": "launch",
-            "program": "${file}",
+            "program": "${workspaceFolder}/wx01.py",
             "console": "integratedTerminal"
         }
     ]
