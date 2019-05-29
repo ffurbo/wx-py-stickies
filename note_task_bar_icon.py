@@ -29,23 +29,23 @@ class NoteTaskBarIcon(wx.adv.TaskBarIcon):
 
     def CreatePopupMenu(self):
         """ create popup menu """
-
-        print(self.main_frame.categories)
-
         menu = wx.Menu()
 
         for cat_wrapper in self.main_frame.category_wrappers:
             create_menu_item(menu, cat_wrapper.category.name, lambda event, frame=cat_wrapper.frame: self.cb_show_frame(event, frame))
 
-        #create_menu_item(menu, 'Say Hello', self.cb_on_hello)
         menu.AppendSeparator()
         create_menu_item(menu, 'Exit', self.cb_on_exit)
         return menu
 
     def cb_taskbar_click(self, event):
         """ left click on tray icon"""
-        print("Taskbar click")
-        self.main_frame.toggle()
+        #print("Taskbar click")
+
+        for cat_wrapper in self.main_frame.category_wrappers:
+            if cat_wrapper.frame.IsShown():
+                cat_wrapper.frame.Raise()
+        #self.main_frame.toggle()
 
     def cb_multi_hello(self, name):
         """ return call back function """
@@ -60,6 +60,7 @@ class NoteTaskBarIcon(wx.adv.TaskBarIcon):
         """ hello """
         frame.Show()
         frame.Raise()
+
 
 
     def cb_on_hello(self, event):
