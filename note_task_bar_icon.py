@@ -32,7 +32,8 @@ class NoteTaskBarIcon(wx.adv.TaskBarIcon):
         menu = wx.Menu()
 
         for cat_wrapper in self.main_frame.category_wrappers:
-            create_menu_item(menu, cat_wrapper.category.name, lambda event, frame=cat_wrapper.frame: self.cb_show_frame(event, frame))
+            create_menu_item(menu, cat_wrapper.category.name,
+                             lambda event, frame=cat_wrapper.frame: self.cb_show_frame(event, frame))
 
         menu.AppendSeparator()
         create_menu_item(menu, 'Exit', self.cb_on_exit)

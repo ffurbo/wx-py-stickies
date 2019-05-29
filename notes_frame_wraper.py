@@ -29,7 +29,7 @@ class NotesFrameWrapper():
     def build_notes_frame(self):
         """Build notes frame"""
 
-        self.res = wx.xrc.XmlResource('NotesFrame.xml')
+        self.res = wx.xrc.XmlResource('NotesFrame.xrc')
         self.frame = self.res.LoadFrame(None, 'NotesFrame')
         self.frame.SetIcon(self.icon)
         self.frame.SetTitle(self.category.name)

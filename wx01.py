@@ -7,7 +7,8 @@ import json
 import wx
 import wx.adv
 
-from notes_frame_wraper import NotesFrameWrapper
+# from notes_frame_wraper import NotesFrameWrapper
+from notes_frame import NotesFrame
 from notes_data import Category
 from notes_data import new_category
 from my_frame import MyFrame
@@ -67,7 +68,7 @@ class MainWindow(MyFrame):
         self.category_wrappers = []
 
         for category in self.categories:
-            wrapper = NotesFrameWrapper(self.icon, category)
+            wrapper = NotesFrame(self.icon, category)
             self.category_wrappers.append(wrapper)
 
 
@@ -159,6 +160,9 @@ class MainWindow(MyFrame):
 
                     category.load_files()
                     self.categories.append(category)
+                    wrapper = NotesFrame(self.icon, category)
+                    self.category_wrappers.append(wrapper)
+                    wrapper.Show()
 
                     print("Category %s added"%category.name)
                 #    self.category.add_note(note)

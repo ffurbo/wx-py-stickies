@@ -30,6 +30,7 @@ class NotePanel(wx.Panel):
             self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize,
             wx.TE_MULTILINE|wx.TE_PROCESS_ENTER
         )
+        self.text.SetBackgroundColour(notes_wraper.colour)
         sizer.Add(self.text, 1, wx.ALL|wx.EXPAND, 5)
 
         sizer_btns = wx.BoxSizer(wx.HORIZONTAL)

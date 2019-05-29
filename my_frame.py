@@ -1,7 +1,6 @@
 """ extended frame """
 
 import json
-import time
 import wx
 
 class MyFrame(wx.Frame):
@@ -20,7 +19,6 @@ class MyFrame(wx.Frame):
 
         #self.Bind(wx.EVT_TIMER, self.cb_move_timer_event)
         self.timer_handler.Bind(wx.EVT_TIMER, self.cb_move_timer_event)
-
         # self.panel0 = None
         # self.sizer1 = None
 
@@ -38,7 +36,6 @@ class MyFrame(wx.Frame):
         """ timer test """
         self.save_window_position(self.GetPosition().Get())
 
-
     def save_window_position(self, position):
         """ save position tuple to file """
         str_position = json.dumps(position)
@@ -52,7 +49,6 @@ class MyFrame(wx.Frame):
         else:
             file.close()
             #print("position saved")
-
 
     def load_window_position(self):
         """ load window position from file """
@@ -77,6 +73,8 @@ class MyFrame(wx.Frame):
             self.Show(False)
         else:
             self.Show(True)
+
+
 
 
     # def generate_starter(self):
