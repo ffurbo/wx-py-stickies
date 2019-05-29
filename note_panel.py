@@ -22,6 +22,7 @@ class NotePanel(wx.Panel):
         self.notes_wraper = notes_wraper
         self.note_id = ""
         self.note = None
+        self.modified = False
 
         sizer = wx.BoxSizer(wx.VERTICAL)
 
@@ -41,13 +42,13 @@ class NotePanel(wx.Panel):
 
         sizer.Add(sizer_btns, 0, wx.ALIGN_RIGHT, 5)
 
-        self.button_save.Bind(wx.EVT_BUTTON, self.cb_save)
+        self.button_save.Bind(wx.EVT_BUTTON, self.cb_save_btn)
         self.button_new.Bind(wx.EVT_BUTTON, self.cb_new)
 
         self.text.Bind(wx.EVT_TEXT, self.cb_text)
         self.text.Bind(wx.EVT_TEXT_ENTER, self.cb_text_enter)
         self.text.Bind(wx.EVT_KILL_FOCUS, self.cb_loose_focus)
-        #EVT_KILL_FOCUS
+        #EVT_KILL_FOCUS EVT_SET_FOCUS
 
         self.SetSizer(sizer)
         self.Layout()
@@ -65,24 +66,31 @@ class NotePanel(wx.Panel):
         """ on type textarea """
         print("typing...")
         self.note.content = self.text.GetValue()
+        self.modified = True
 
 
     def cb_text_enter(self, event):
         """ on enter textarea """
         print("enter...")
-        #self.note.content = self.text.GetValue()
-        self.note.save_to_file()
+        self.save_data()
         event.Skip(True)
 
     def cb_loose_focus(self, event):
         """ on loose focus """
-        print("loosing focus now...")
-        self.note.save_to_file()
+        print("%s killing focus now..."%self.note.title)
+        self.save_data()
         event.Skip(True)
 
-    def cb_save(self, event):
-        """ save data """
-        self.note.save_to_file()
+    def cb_save_btn(self, event):
+        """ save data button """
+        self.save_data()
+
+
+    def save_data(self):
+        """ save data"""
+        if self.modified:
+            self.note.save_to_file()
+
 
     def cb_new(self, event):
         """ new note """

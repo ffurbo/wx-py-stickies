@@ -2,6 +2,7 @@
 
 import json
 import time
+import os
 from pathlib import Path
 
 class Category():
@@ -24,7 +25,7 @@ class Category():
         self.notes.append(note)
 
     def load_files(self):
-        """ generate some test data """
+        """ load notes from files """
         # self.name = "Test category"
 
         data_path = Path('data/categories/%s'%self.name)
@@ -34,6 +35,8 @@ class Category():
             note.load_from_file(str(path))
             self.add_note(note)
 
+    def __str__(self):
+        return "---> name: %s, %s"%(self.name, self.notes)
         # for i in range(5):
         #     note = Note()
         #     note.load_from_file('data/note_%d.json'%(i))
@@ -102,6 +105,10 @@ class Note():
 
             print("data read")
 
+    def __str__(self):
+        return "%d - %s"%(self.note_id, self.title)
+
+
 def new_note(title, category):
     """ create new note locally """
 
@@ -133,3 +140,18 @@ def new_note(title, category):
             note.content = data['content']
             print("data saved")
             return note
+
+
+def new_category(title):
+    """ create new category locally """
+
+    dir_name = "data/categories/%s"%title
+    # Create target Directory if don't exist
+    if not os.path.exists(dir_name):
+        os.mkdir(dir_name)
+        print("Directory ", dir_name, " Created ")
+        category = Category(title)
+        return category
+    else:
+        print("Directory ", dir_name, " already exists")
+        return None

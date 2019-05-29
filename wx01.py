@@ -9,6 +9,7 @@ import wx.adv
 
 from notes_frame_wraper import NotesFrameWrapper
 from notes_data import Category
+from notes_data import new_category
 from my_frame import MyFrame
 from note_task_bar_icon import NoteTaskBarIcon
 
@@ -47,13 +48,14 @@ class MainWindow(MyFrame):
 
         self.SetIcon(self.icon)
         self.categories = []
+        #self.local_categories_list
 
 
         with open('data/categories.json') as json_category_file:
-            categories_list = json.load(json_category_file)
+            self.local_categories_list = json.load(json_category_file)
 
 
-        for category_name in categories_list:
+        for category_name in self.local_categories_list:
             category = Category(category_name)
             category.load_files()
             self.categories.append(category)
@@ -62,9 +64,36 @@ class MainWindow(MyFrame):
         #self.category.load_files()
         #print(self.category.notes)
 
-        self.wrapper = NotesFrameWrapper(self.icon, self.category)
+        self.category_wrappers = []
+
+        for category in self.categories:
+            wrapper = NotesFrameWrapper(self.icon, category)
+            self.category_wrappers.append(wrapper)
+
+
+        self.wrapper = self.category_wrappers[0]
+        #= NotesFrameWrapper(self.icon, self.category)
 
         self.init_ui()
+
+
+    def add_local_category_name(self, name):
+        """ save category name to local file"""
+        self.local_categories_list.append(name)
+
+        try:
+            file = open("data/categories.json", 'w')
+            file.write(json.dumps(self.local_categories_list))
+        except OSError as err:
+            print("can't save data: {0}".format(err))
+            return None
+        else:
+            file.close()
+
+        # with open('data/categories.json') as json_category_file:
+        #     self.local_categories_list = json.load(json_category_file)
+
+
 
     def init_ui(self):
         """Initialize user interface"""
@@ -79,7 +108,7 @@ class MainWindow(MyFrame):
         self.m_button2 = wx.Button(self, wx.ID_ANY, "Notes", wx.DefaultPosition, wx.DefaultSize, 0)
         b_sizer2.Add(self.m_button2, 0, wx.ALL, 5)
 
-        self.m_button4 = wx.Button(self, wx.ID_ANY, "New note", wx.DefaultPosition, wx.DefaultSize, 0)
+        self.m_button4 = wx.Button(self, wx.ID_ANY, "New ...", wx.DefaultPosition, wx.DefaultSize, 0)
         b_sizer2.Add(self.m_button4, 0, wx.ALL, 5)
 
         self.m_button3 = wx.Button(self, wx.ID_ANY, "Exit", wx.DefaultPosition, wx.DefaultSize, 0)
@@ -87,7 +116,7 @@ class MainWindow(MyFrame):
 
         self.m_button1.Bind(wx.EVT_BUTTON, self.cb_test)
         self.m_button2.Bind(wx.EVT_BUTTON, self.cb_note)
-        self.m_button4.Bind(wx.EVT_BUTTON, self.wrapper.new_note_dialog)
+        self.m_button4.Bind(wx.EVT_BUTTON, self.cb_new_category_btn)
         self.m_button3.Bind(wx.EVT_BUTTON, self.cb_exit_btn)
         self.Bind(wx.EVT_CLOSE, self.cb_close_event)
 
@@ -109,6 +138,36 @@ class MainWindow(MyFrame):
         """Close the frame, terminating the application."""
         self.kill_me()
 
+    def cb_new_note_btn(self, event):
+        """Close the frame, terminating the application."""
+        self.wrapper.new_note_dialog()
+
+    def cb_new_category_btn(self, event):
+        """Close the frame, terminating the application."""
+        self.new_category_dialog()
+
+    def new_category_dialog(self):
+        """ new note """
+        try:
+            dialog = wx.TextEntryDialog(self, "Enter title of new category", caption="New category")
+            if dialog.ShowModal() == wx.ID_OK:
+                title = dialog.GetValue()
+                print('You entered: %s'%title)
+                category = new_category(title)
+                if category is not None:
+                    self.add_local_category_name(category.name)
+
+                    category.load_files()
+                    self.categories.append(category)
+
+                    print("Category %s added"%category.name)
+                #    self.category.add_note(note)
+                #    self.add_note_page(note)
+
+            else:
+                print('You entered nothing')
+        finally:
+            dialog.Destroy()
 
     def cb_note(self, event):
         """Show note"""
@@ -119,7 +178,9 @@ class MainWindow(MyFrame):
     def kill_me(self):
         """ close an app """
         #print("Bye bye...")
-        self.wrapper.frame.Destroy()
+        #self.wrapper.frame.Destroy()
+        for wrapper in self.category_wrappers:
+            wrapper.frame.Destroy()
         self.Destroy()
 
 
