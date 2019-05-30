@@ -17,63 +17,90 @@ from my_frame import MyFrame
 from note_task_bar_icon import NoteTaskBarIcon
 
 
-
 class App(wx.App):
     """app"""
 
     def __init__(self):
         wx.App.__init__(self)
 
-        workdir = os.path.join(str(Path.home()), ".wx-py-stickies")
+        res = Resources()
 
-        print(workdir)
-
-        if not os.path.exists(workdir):
-            os.mkdir(workdir)
-            print("Directory ", workdir, " Created ")
-        else:
-            print("Directory ", workdir, " already exists")
 
 
         try:
-            # Change the current working Directory
-            os.chdir(workdir)
+            os.chdir(res.work_dir)
             print("Directory changed")
         except OSError:
             print("Can't change the Current Working Directory")
 
 
-        with open('config.json') as json_cfg_file:
-            cfg = json.load(json_cfg_file)
 
-        self.frame = MainWindow(None, cfg)
+
+
+        self.frame = MainWindow(res)
         self.tbicon = NoteTaskBarIcon(self.frame)
         self.frame.Show(False)
+
+
+class Resources:
+    """ app resources """
+
+    def __init__(self):
+
+        self.work_dir = os.path.join(str(Path.home()), ".wx-py-stickies")
+        self.app_dir = os.path.dirname(os.path.realpath(__file__))
+
+        with open(os.path.join(self.app_dir, 'config.json')) as json_cfg_file:
+            self.cfg = json.load(json_cfg_file)
+
+        self.icon = wx.Icon(os.path.join(self.app_dir, 'card.ico'))
+
+        self.check_dir(self.work_dir)
+        self.check_dir(os.path.join(self.work_dir, "data"))
+        self.check_dir(os.path.join(self.work_dir, "data", "categories"))
+
+    def check_dir(self, directory):
+        """  create directory if not exist"""
+        if not os.path.exists(directory):
+            os.mkdir(directory)
+            print("Directory ", directory, " Created ")
+        else:
+            print("Directory ", directory, " already exists")
+
+
 
 class MainWindow(MyFrame):
     """
     main frame
     """
 
-    def __init__(self, parent, cfg):
+    def __init__(self, res):
         MyFrame.__init__(
-            self, parent,
+            self, None,
             id=wx.ID_ANY,
-            title=cfg["title"],
+            title=res.cfg["title"],
             style=0|wx.TAB_TRAVERSAL|wx.DEFAULT_FRAME_STYLE,
         )
 
+        self.res = res
+        self.icon = res.icon
         self.SetPosition(self.load_window_position())
         self.SetSize(self.load_window_size())
-        self.icon = wx.Icon('card.ico')
 
-        self.SetIcon(self.icon)
+        self.SetIcon(res.icon)
         self.categories = []
-        #self.local_categories_list
 
+        file_name = 'data/categories.json'
 
-        with open('data/categories.json') as json_category_file:
+        try:
+            json_category_file = open(file_name, 'r')
             self.local_categories_list = json.load(json_category_file)
+        except OSError as err:
+            print("can't load property: {0}".format(err))
+            self.local_categories_list = []
+            self.categories_to_file()
+        else:
+            json_category_file.close()
 
 
         for category_name in self.local_categories_list:
@@ -81,9 +108,6 @@ class MainWindow(MyFrame):
             category.load_files()
             self.categories.append(category)
 
-        #self.category = self.categories[0]
-        #self.category.load_files()
-        #print(self.category.notes)
 
         self.category_wrappers = []
 
@@ -91,9 +115,6 @@ class MainWindow(MyFrame):
             wrapper = NotesFrame(self.icon, category)
             self.category_wrappers.append(wrapper)
 
-
-        #self.wrapper = self.category_wrappers[0]
-        #= NotesFrameWrapper(self.icon, self.category)
 
         self.init_ui()
         for wrapper in self.category_wrappers:
@@ -103,19 +124,19 @@ class MainWindow(MyFrame):
     def add_local_category_name(self, name):
         """ save category name to local file"""
         self.local_categories_list.append(name)
+        self.categories_to_file()
 
+
+
+    def categories_to_file(self):
+        """  categories list to file """
         try:
             file = open("data/categories.json", 'w')
             file.write(json.dumps(self.local_categories_list))
         except OSError as err:
             print("can't save data: {0}".format(err))
-            return None
         else:
             file.close()
-
-        # with open('data/categories.json') as json_category_file:
-        #     self.local_categories_list = json.load(json_category_file)
-
 
 
     def init_ui(self):
@@ -145,8 +166,6 @@ class MainWindow(MyFrame):
 
         self.SetSizer(b_sizer2)
         self.Layout()
-
-
 
 
     def cb_test(self, event):
@@ -183,7 +202,7 @@ class MainWindow(MyFrame):
 
                     category.load_files()
                     self.categories.append(category)
-                    wrapper = NotesFrame(self.icon, category)
+                    wrapper = NotesFrame(self.res.icon, category)
                     self.category_wrappers.append(wrapper)
                     wrapper.Show()
 
