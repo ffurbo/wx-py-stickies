@@ -4,6 +4,8 @@ main app
 """
 
 import json
+import os
+from pathlib import Path
 import wx
 import wx.adv
 
@@ -15,18 +17,38 @@ from my_frame import MyFrame
 from note_task_bar_icon import NoteTaskBarIcon
 
 
+
 class App(wx.App):
     """app"""
 
     def __init__(self):
         wx.App.__init__(self)
 
+        workdir = os.path.join(str(Path.home()), ".wx-py-stickies")
+
+        print(workdir)
+
+        if not os.path.exists(workdir):
+            os.mkdir(workdir)
+            print("Directory ", workdir, " Created ")
+        else:
+            print("Directory ", workdir, " already exists")
+
+
+        try:
+            # Change the current working Directory
+            os.chdir(workdir)
+            print("Directory changed")
+        except OSError:
+            print("Can't change the Current Working Directory")
+
+
         with open('config.json') as json_cfg_file:
             cfg = json.load(json_cfg_file)
 
         self.frame = MainWindow(None, cfg)
         self.tbicon = NoteTaskBarIcon(self.frame)
-        self.frame.Show()
+        self.frame.Show(False)
 
 class MainWindow(MyFrame):
     """
@@ -38,13 +60,11 @@ class MainWindow(MyFrame):
             self, parent,
             id=wx.ID_ANY,
             title=cfg["title"],
-            #pos=self.load_window_position(), #wx.Point(100, 100),
-            size=wx.Size(500, 300),
-            style=0|wx.TAB_TRAVERSAL,
+            style=0|wx.TAB_TRAVERSAL|wx.DEFAULT_FRAME_STYLE,
         )
 
         self.SetPosition(self.load_window_position())
-
+        self.SetSize(self.load_window_size())
         self.icon = wx.Icon('card.ico')
 
         self.SetIcon(self.icon)
@@ -61,7 +81,7 @@ class MainWindow(MyFrame):
             category.load_files()
             self.categories.append(category)
 
-        self.category = self.categories[0]
+        #self.category = self.categories[0]
         #self.category.load_files()
         #print(self.category.notes)
 
@@ -72,10 +92,12 @@ class MainWindow(MyFrame):
             self.category_wrappers.append(wrapper)
 
 
-        self.wrapper = self.category_wrappers[0]
+        #self.wrapper = self.category_wrappers[0]
         #= NotesFrameWrapper(self.icon, self.category)
 
         self.init_ui()
+        for wrapper in self.category_wrappers:
+            wrapper.Show(wrapper.pinned)
 
 
     def add_local_category_name(self, name):
@@ -132,7 +154,8 @@ class MainWindow(MyFrame):
 
     def cb_close_event(self, event):
         """ callback for EVT_CLOSE """
-        self.kill_me()
+        #self.kill_me()
+        self.Show(False)
 
 
     def cb_exit_btn(self, event):
@@ -141,16 +164,16 @@ class MainWindow(MyFrame):
 
     def cb_new_note_btn(self, event):
         """Close the frame, terminating the application."""
-        self.wrapper.new_note_dialog()
+        #self.wrapper.new_note_dialog()
 
     def cb_new_category_btn(self, event):
         """Close the frame, terminating the application."""
         self.new_category_dialog()
 
-    def new_category_dialog(self):
+    def new_category_dialog(self, parent=None):
         """ new note """
         try:
-            dialog = wx.TextEntryDialog(self, "Enter title of new category", caption="New category")
+            dialog = wx.TextEntryDialog(parent, "Enter title of new category", caption="New category")
             if dialog.ShowModal() == wx.ID_OK:
                 title = dialog.GetValue()
                 print('You entered: %s'%title)
@@ -175,8 +198,8 @@ class MainWindow(MyFrame):
 
     def cb_note(self, event):
         """Show note"""
-        self.wrapper.frame.Show()
-        self.wrapper.frame.Raise()
+        #self.wrapper.frame.Show()
+        #self.wrapper.frame.Raise()
 
 
     def kill_me(self):
@@ -184,7 +207,7 @@ class MainWindow(MyFrame):
         #print("Bye bye...")
         #self.wrapper.frame.Destroy()
         for wrapper in self.category_wrappers:
-            wrapper.frame.Destroy()
+            wrapper.Destroy()
         self.Destroy()
 
 

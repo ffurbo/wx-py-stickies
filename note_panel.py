@@ -28,23 +28,26 @@ class NotePanel(wx.Panel):
 
         self.text = wx.TextCtrl(
             self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize,
-            wx.TE_MULTILINE|wx.TE_PROCESS_ENTER
+            wx.TE_MULTILINE|wx.TE_PROCESS_ENTER|wx.BORDER_NONE
         )
         self.text.SetBackgroundColour(notes_wraper.colour)
-        sizer.Add(self.text, 1, wx.ALL|wx.EXPAND, 5)
+        self.text.SetFont(wx.Font(10, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL,
+                                  wx.FONTWEIGHT_NORMAL, False, "Roboto Mono"))
 
-        sizer_btns = wx.BoxSizer(wx.HORIZONTAL)
+        sizer.Add(self.text, 1, wx.ALL|wx.EXPAND, 10)
 
-        self.button_save = wx.Button(self, wx.ID_ANY, "Save", wx.DefaultPosition, wx.DefaultSize, 0)
-        sizer_btns.Add(self.button_save, 0, wx.ALL|wx.ALIGN_RIGHT, 5)
+        # sizer_btns = wx.BoxSizer(wx.HORIZONTAL)
 
-        self.button_new = wx.Button(self, wx.ID_ANY, "New", wx.DefaultPosition, wx.DefaultSize, 0)
-        sizer_btns.Add(self.button_new, 0, wx.ALL|wx.ALIGN_RIGHT, 5)
+        # self.button_save = wx.Button(self, wx.ID_ANY, "Save", wx.DefaultPosition, wx.DefaultSize, 0)
+        # sizer_btns.Add(self.button_save, 0, wx.ALL|wx.ALIGN_RIGHT, 5)
 
-        sizer.Add(sizer_btns, 0, wx.ALIGN_RIGHT, 5)
+        # self.button_new = wx.Button(self, wx.ID_ANY, "New", wx.DefaultPosition, wx.DefaultSize, 0)
+        # sizer_btns.Add(self.button_new, 0, wx.ALL|wx.ALIGN_RIGHT, 5)
 
-        self.button_save.Bind(wx.EVT_BUTTON, self.cb_save_btn)
-        self.button_new.Bind(wx.EVT_BUTTON, self.cb_new)
+        # sizer.Add(sizer_btns, 0, wx.ALIGN_RIGHT, 5)
+
+        # self.button_save.Bind(wx.EVT_BUTTON, self.cb_save_btn)
+        # self.button_new.Bind(wx.EVT_BUTTON, self.cb_new)
 
         self.text.Bind(wx.EVT_TEXT, self.cb_text)
         self.text.Bind(wx.EVT_TEXT_ENTER, self.cb_text_enter)

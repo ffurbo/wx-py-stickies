@@ -22,11 +22,12 @@ class NotesFrame(MyFrame):
             id=wx.ID_ANY,
             title=category.name,
             #pos=self.load_window_position(), #wx.Point(100, 100),
-            size=wx.Size(500, 300),
-            style=0|wx.TAB_TRAVERSAL|wx.DEFAULT_FRAME_STYLE,
+            #size=wx.Size(500, 300),
+            style=0|wx.TAB_TRAVERSAL|wx.DEFAULT_FRAME_STYLE|wx.FRAME_NO_TASKBAR,
         )
 
         self.SetPosition(self.load_window_position())
+        self.SetSize(self.load_window_size())
 
         self.colour = wx.Colour(255, 255, 217)
         self.icon = icon
@@ -36,6 +37,7 @@ class NotesFrame(MyFrame):
         self.frame = self
         self.tabs = None
         self.note_panels = []
+        self.current_panel = None
 
         self.build_notes_frame()
 
@@ -53,15 +55,42 @@ class NotesFrame(MyFrame):
 
         b_sizer_0.Add(self.tabs, 1, wx.EXPAND |wx.ALL, 0)
 
+        b_sizer_1 = wx.BoxSizer(wx.HORIZONTAL)
+
+        self.bottom_btn_1 = wx.Button(self, wx.ID_ANY, "Save", wx.DefaultPosition, wx.DefaultSize, 0)
+        b_sizer_1.Add(self.bottom_btn_1, 0, wx.ALL, 5)
+
+        self.bottom_btn_2 = wx.Button(self, wx.ID_ANY, "New", wx.DefaultPosition, wx.DefaultSize, 0)
+        b_sizer_1.Add(self.bottom_btn_2, 0, wx.ALL, 5)
+
+        self.pin_btn = wx.ToggleButton(self, wx.ID_ANY, "Pin", wx.DefaultPosition, wx.DefaultSize, 0)
+        self.pin_btn.SetValue(self.pinned)
+        b_sizer_1.Add(self.pin_btn, 0, wx.ALL, 5)
+
+        b_sizer_0.Add(b_sizer_1, 0, wx.ALIGN_RIGHT, 10)
+
         self.SetSizer(b_sizer_0)
         self.Layout()
 
         for note in self.category.notes:
             self.add_note_page(note)
 
+        self.Bind(wx.EVT_CLOSE, self.cb_close_event)
+        self.tabs.Bind(wx.EVT_NOTEBOOK_PAGE_CHANGED, self.cb_change_page)
+        self.bottom_btn_1.Bind(wx.EVT_BUTTON, self.cb_save)
+        self.bottom_btn_2.Bind(wx.EVT_BUTTON, self.cb_new)
 
-        self.frame.Bind(wx.EVT_CLOSE, self.cb_close_event)
+    def cb_save(self, event):
+        """ save current note """
 
+    def cb_new(self, event):
+        """ new note """
+        self.new_note_dialog()
+
+    def cb_change_page(self, event):
+        """ change page event """
+        if self.tabs:
+            self.current_panel = self.tabs.GetCurrentPage()
 
     def add_note_page(self, note):
         """ add new tab """

@@ -36,8 +36,19 @@ class NoteTaskBarIcon(wx.adv.TaskBarIcon):
                              lambda event, frame=cat_wrapper.frame: self.cb_show_frame(event, frame))
 
         menu.AppendSeparator()
+        create_menu_item(menu, 'New category', self.cb_new_category)
+        create_menu_item(menu, 'Main window', self.cb_main_window)
+        menu.AppendSeparator()
         create_menu_item(menu, 'Exit', self.cb_on_exit)
         return menu
+
+    def cb_main_window(self, event):
+        """ main window menu item action """
+        self.main_frame.Show()
+
+    def cb_new_category(self, event):
+        """ new category menu item action """
+        self.main_frame.new_category_dialog(None)
 
     def cb_taskbar_click(self, event):
         """ left click on tray icon"""
@@ -73,6 +84,7 @@ class NoteTaskBarIcon(wx.adv.TaskBarIcon):
         #self.menu.Destroy()
         #self.menu = None
 
-        self.main_frame.Close()
+        if self.main_frame:
+            self.main_frame.kill_me()
         self.Destroy()
         #wx.CallAfter(self.Destroy)
