@@ -20,7 +20,58 @@ class MyFrame(wx.Frame):
         self.move_timer_handler.Bind(wx.EVT_TIMER, self.cb_move_timer_event)
         self.size_timer_handler.Bind(wx.EVT_TIMER, self.cb_size_timer_event)
 
-        self.pinned = True
+        self.cfg_file_name = 'data/%s_window_cfg.json'%(self.GetLabel())
+
+        cfg = self.load_config()
+        if cfg is not None:
+            self.cfg = cfg
+        else:
+            self.cfg = {
+                "position": [100, 100],
+                "size": [500, 300],
+                "pinned": 0
+            }
+            self.save_config()
+
+        self.pinned = bool(self.cfg["pinned"])
+
+
+    def get_config(self):
+        """ get current config dict """
+        result = {
+            "position": self.GetPosition().Get(),
+            "size": self.GetSize().Get(),
+            "pinned": True
+        }
+        return result
+
+
+    def save_config(self):
+        """ save config to file """
+        data = json.dumps(self.cfg)
+
+        try:
+            file = open(self.cfg_file_name, 'w')
+            file.write(data)
+        except OSError as err:
+            print("can't save property: {0}".format(err))
+        else:
+            file.close()
+
+    def load_config(self):
+        """ load config from file """
+
+        try:
+            file = open(self.cfg_file_name, 'r')
+            str_data = file.read()
+        except OSError as err:
+            print("can't load property: {0}".format(err))
+            return None  #wx.DefaultPosition
+        else:
+            file.close()
+            #print("position loaded")
+            data = json.loads(str_data)
+            return data #wx.Point(*position)
 
 
     def cb_move(self, event):
@@ -47,27 +98,39 @@ class MyFrame(wx.Frame):
 
     def save_window_position(self, position):
         """ save window position """
-        self.save_xy(position, 'window_position')
+        #self.save_xy(position, 'window_position')
+        self.cfg["position"] = position
+        self.save_config()
 
     def save_window_size(self, size):
         """ save window position """
-        self.save_xy(size, 'window_size')
+        #self.save_xy(size, 'window_size')
+        self.cfg["size"] = size
+        self.save_config()
 
     def load_window_position(self):
         """ load window position """
-        xy = self.load_xy('window_position')
-        if xy is not None:
-            return wx.Point(*xy)
-        else:
-            return wx.DefaultPosition
+
+        self.load_config()
+        return self.cfg['position']
+
+        # xy = self.load_xy('window_position')
+        # if xy is not None:
+        #     return wx.Point(*xy)
+        # else:
+        #     return wx.DefaultPosition
 
     def load_window_size(self):
         """ load window position """
-        xy = self.load_xy('window_size')
-        if xy is not None:
-            return wx.Size(*xy)
-        else:
-            return wx.Size(500, 300)
+
+        self.load_config()
+        return self.cfg['size']
+
+        # xy = self.load_xy('window_size')
+        # if xy is not None:
+        #     return wx.Size(*xy)
+        # else:
+        #     return wx.Size(500, 300)
 
 
     def save_xy(self, position, prop):

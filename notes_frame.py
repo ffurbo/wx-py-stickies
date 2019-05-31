@@ -16,7 +16,7 @@ class NotesFrame(MyFrame):
     notes category frame
     """
 
-    def __init__(self, icon, category):
+    def __init__(self, res, category):
         MyFrame.__init__(
             self, None,
             id=wx.ID_ANY,
@@ -29,11 +29,12 @@ class NotesFrame(MyFrame):
         self.SetPosition(self.load_window_position())
         self.SetSize(self.load_window_size())
 
-        self.colour = wx.Colour(255, 255, 217)
-        self.icon = icon
+        self.colour = wx.Colour(*res.cfg["note_color"])
+        #self.icon = icon
         self.category = category
         #self.note = NoteWindow(None, icon)
 
+        self.res = res
         self.frame = self
         self.tabs = None
         self.note_panels = []
@@ -45,7 +46,7 @@ class NotesFrame(MyFrame):
     def build_notes_frame(self):
         """Build notes frame"""
 
-        self.SetIcon(self.icon)
+        self.SetIcon(self.res.icon)
         self.SetSizeHints(wx.DefaultSize, wx.DefaultSize)
         self.SetBackgroundColour(self.colour)
 
@@ -79,6 +80,14 @@ class NotesFrame(MyFrame):
         self.tabs.Bind(wx.EVT_NOTEBOOK_PAGE_CHANGED, self.cb_change_page)
         self.bottom_btn_1.Bind(wx.EVT_BUTTON, self.cb_save)
         self.bottom_btn_2.Bind(wx.EVT_BUTTON, self.cb_new)
+        self.pin_btn.Bind(wx.EVT_TOGGLEBUTTON, self.cb_pin_toggle)
+
+    def cb_pin_toggle(self, event):
+        """ pin or unpin frame """
+        self.pinned = event.IsChecked()
+        print(self.pinned)
+        self.cfg["pinned"] = int(self.pinned)
+        self.save_config()
 
     def cb_save(self, event):
         """ save current note """

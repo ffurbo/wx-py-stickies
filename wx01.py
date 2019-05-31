@@ -4,8 +4,10 @@ main app
 """
 
 import json
+from shutil import copyfile
 import os
 from pathlib import Path
+import sys
 import wx
 import wx.adv
 
@@ -25,17 +27,11 @@ class App(wx.App):
 
         res = Resources()
 
-
-
         try:
             os.chdir(res.work_dir)
             print("Directory changed")
         except OSError:
             print("Can't change the Current Working Directory")
-
-
-
-
 
         self.frame = MainWindow(res)
         self.tbicon = NoteTaskBarIcon(self.frame)
@@ -50,14 +46,17 @@ class Resources:
         self.work_dir = os.path.join(str(Path.home()), ".wx-py-stickies")
         self.app_dir = os.path.dirname(os.path.realpath(__file__))
 
-        with open(os.path.join(self.app_dir, 'config.json')) as json_cfg_file:
-            self.cfg = json.load(json_cfg_file)
-
         self.icon = wx.Icon(os.path.join(self.app_dir, 'card.ico'))
 
         self.check_dir(self.work_dir)
         self.check_dir(os.path.join(self.work_dir, "data"))
         self.check_dir(os.path.join(self.work_dir, "data", "categories"))
+
+        self.check_file(self.work_dir, 'config.json')
+
+        with open(os.path.join(self.work_dir, 'config.json')) as json_cfg_file:
+            self.cfg = json.load(json_cfg_file)
+
 
     def check_dir(self, directory):
         """  create directory if not exist"""
@@ -67,6 +66,20 @@ class Resources:
         else:
             print("Directory ", directory, " already exists")
 
+    def check_file(self, path, filename):
+        """ make sure file is copied from application dir to path """
+        filepath = os.path.join(path, filename)
+
+        if not os.path.exists(filepath):
+
+            src_filepath = os.path.join(self.app_dir, filename)
+            if not os.path.exists(src_filepath):
+                sys.exit("%s file is missing"%src_filepath)
+
+            self.check_dir(path)
+            copyfile(src_filepath, filepath)
+        else:
+            print("File %s present "%filepath)
 
 
 class MainWindow(MyFrame):
@@ -112,7 +125,7 @@ class MainWindow(MyFrame):
         self.category_wrappers = []
 
         for category in self.categories:
-            wrapper = NotesFrame(self.icon, category)
+            wrapper = NotesFrame(self.res, category)
             self.category_wrappers.append(wrapper)
 
 
@@ -143,7 +156,7 @@ class MainWindow(MyFrame):
         """Initialize user interface"""
 
         self.SetSizeHints(wx.DefaultSize, wx.DefaultSize)
-        self.SetBackgroundColour(wx.Colour(255, 254, 195))
+        self.SetBackgroundColour(wx.Colour(*self.res.cfg["note_color"]))
 
         b_sizer2 = wx.BoxSizer(wx.HORIZONTAL)
 
@@ -202,7 +215,7 @@ class MainWindow(MyFrame):
 
                     category.load_files()
                     self.categories.append(category)
-                    wrapper = NotesFrame(self.res.icon, category)
+                    wrapper = NotesFrame(self.res, category)
                     self.category_wrappers.append(wrapper)
                     wrapper.Show()
 
